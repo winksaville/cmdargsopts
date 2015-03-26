@@ -6,3 +6,4 @@ nimcache/
 # Full paths
 /tests/test
 /src/cmdargsopt
+/nakefile
