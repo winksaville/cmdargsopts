@@ -1,22 +1,44 @@
-import parseopt2, strutils, tables, pegs
+import parseopt2, strutils, tables, pegs, os
 export tables
 
 const
   DBG = false
+
+# Note: we shouldn't have to repeat "initTable[string, string]" 4 times
+# but I don't know how to do it "right"
 
 var
   # Tables of key, value pairs
   cmdArgs* = initTable[string, string]()
   cmdOpts* = initTable[string, string]()
 
-proc parseCmdArgsOpts*() =
+proc parseCmdArgsOpts*(cmdLine: seq[string]) =
   ## parse the command line using parseopt2 creating two tables,
   ## cmdArgs and cmdOpts. cmdOpts constains the key value pairs
   ## of both the short and long options and cmdArgs contains all
   ## other arguments. For cmdArgs the first ":" or "=" is used
   ## to separate the key value pair and if there is none the value
   ## is the empty string.
-  for kind, key, val in getopt():
+
+  var parser: OptParser
+
+  # clear the tables
+  if cmdArgs.len != 0:
+    cmdArgs = initTable[string, string]()
+  if cmdOpts.len != 0:
+    cmdOpts = initTable[string, string]()
+
+  # Initialize the parser
+  when DBG: echo "cmdLine=", cmdLine
+  parser = initOptParser(cmdLine)
+
+  # loop going through the arguments and options saving them to the table
+  while true:
+    parser.next()
+    var
+      kind = parser.kind
+      key = parser.key
+      val = parser.val
     case kind:
     of cmdShortOption, cmdLongOption:
       when DBG: echo "cmd{Short|Long}Option: key=", key, " val=", val
@@ -33,7 +55,12 @@ proc parseCmdArgsOpts*() =
       else:
         when DBG: echo "cmdArgument: unknown len=", args.len
         discard
+    of cmdEnd:
+      when DBG: echo "cmdEnd: done"
+      break
     else:
       when DBG: echo "unknown kind=", kind
       discard
 
+proc parseCmdArgsOpts*() =
+  parseCmdArgsOpts(commandLineParams())

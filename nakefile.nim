@@ -11,9 +11,12 @@ task defaultTask, "Compile and run the tests":
 task "build-tests", "Build the tests":
   if shell(nimExe, "c", buildFlags, "tests/test.nim"):
     echo "success"
+  else:
+    echo "error compiling"
+    quit 1
 
 task "run-tests", "Run the tests":
-  discard shell("tests/test", "rt=3.0", "v=0")
+  discard shell("tests/test")
 
 task "nake", "build the nakefile":
   if not shell("nim c", buildFlags, " nakefile"):
