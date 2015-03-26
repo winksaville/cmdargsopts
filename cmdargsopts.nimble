@@ -1,6 +1,6 @@
 [Package]
 name          = "cmdargsopts"
-version       = "0.2.0"
+version       = "0.3.0"
 author        = "Wnk Saville"
 description   = "Simple command line parser to create cmdArgs and cmdOpts tables."
 license       = "BSD"
