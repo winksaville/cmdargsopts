@@ -1,4 +1,4 @@
-import cmdargsopts, unittest
+import cmdargsopts, unittest, tables, sequtils
 
 suite "test cmdargsopts":
   test "no params":
@@ -18,6 +18,10 @@ suite "test cmdargsopts":
     check(cmdArgs["first"] == "")
     check(cmdArgs["second"] == "")
     check(cmdOpts.len == 0)
+    # check that its ordered
+    var k = toSeq(keys(cmdArgs))
+    check(k[0] == "first")
+    check(k[1] == "second")
 
   test "one argument with value and '=' seperator":
     parseCmdArgsOpts(@["a=1"])
@@ -81,4 +85,15 @@ suite "test cmdargsopts":
     check(cmdOpts["Small"] == "a B c")
     check(cmdOpts["l"] == "1")
 
-  
+  test "ordering":
+    parseCmdArgsOpts(@["5", "-z:z", "--long:aLong", "3", "2", "4", "1", "-s:d"])
+    var k = toSeq(keys(cmdArgs))
+    check(k[0] == "5")
+    check(k[1] == "3")
+    check(k[2] == "2")
+    check(k[3] == "4")
+    check(k[4] == "1")
+    k = toSeq(keys(cmdOpts))
+    check(k[0] == "z")
+    check(k[1] == "long")
+    check(k[2] == "s")

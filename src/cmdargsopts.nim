@@ -4,13 +4,13 @@ export tables
 const
   DBG = false
 
-# Note: we shouldn't have to repeat "initTable[string, string]" 4 times
+# Note: we shouldn't have to repeat "initOrderedTable[string, string]" 4 times
 # but I don't know how to do it "right"
 
 var
   # Tables of key, value pairs
-  cmdArgs* = initTable[string, string]()
-  cmdOpts* = initTable[string, string]()
+  cmdArgs* = initOrderedTable[string, string]()
+  cmdOpts* = initOrderedTable[string, string]()
 
 proc parseCmdArgsOpts*(cmdLine: seq[string]) =
   ## parse the command line using parseopt2 creating two tables,
@@ -24,9 +24,9 @@ proc parseCmdArgsOpts*(cmdLine: seq[string]) =
 
   # clear the tables
   if cmdArgs.len != 0:
-    cmdArgs = initTable[string, string]()
+    cmdArgs = initOrderedTable[string, string]()
   if cmdOpts.len != 0:
-    cmdOpts = initTable[string, string]()
+    cmdOpts = initOrderedTable[string, string]()
 
   # Initialize the parser
   when DBG: echo "cmdLine=", cmdLine
